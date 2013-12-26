@@ -269,8 +269,8 @@ module Puma
       # Prevent a child process from mesing with check pipe
       old_flag = @check_pipe.fcntl(Fcntl::F_GETFD, 0)
       old_sflag = @suicide_pipe.fcntl(Fcntl::F_GETFD, 0)
-      @check_pipe.fcntl(Fcntl::F_SETFD, old_flag | FD_CLOEXEC)
-      @suicide_pipe.fcntl(Fcntl::F_SETFD, old_sflag | FD_CLOEXEC)
+      @check_pipe.fcntl(Fcntl::F_SETFD, old_flag | Fcntl::FD_CLOEXEC)
+      @suicide_pipe.fcntl(Fcntl::F_SETFD, old_sflag | Fcntl::FD_CLOEXEC)
       log " - CLOEXEC flags have been set"
       if daemon?
         log "* Daemonizing..."
