@@ -148,6 +148,7 @@ module Puma
       server = start_server
 
       Signal.trap "SIGTERM" do
+        log " - got signal #{$$} my pid is #{Process.pid}"
         server.stop
       end
 
