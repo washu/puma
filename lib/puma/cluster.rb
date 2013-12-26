@@ -149,7 +149,6 @@ module Puma
       server = start_server
 
       Signal.trap "SIGTERM" do
-        log " - got signal #{$$} my pid is #{Process.pid}"
         server.stop
       end
 
@@ -229,18 +228,15 @@ module Puma
       read, @wakeup = Puma::Util.pipe
 
       Signal.trap "SIGCHLD" do
-        log "- got CHLD for #{$$} | #{Process.pid}"
         wakeup!
       end
 
       Signal.trap "TTIN" do
-        log "- got TTIN for #{$$} | #{Process.pid}"
         @options[:workers] += 1
         wakeup!
       end
 
       Signal.trap "TTOU" do
-        log "- got TTOU for #{$$} | #{Process.pid}"
         @options[:workers] -= 1 if @options[:workers] >= 2
         @workers.last.term
         wakeup!
@@ -267,11 +263,6 @@ module Puma
       #
       @check_pipe, @suicide_pipe = Puma::Util.pipe
       # Prevent a child process from mesing with check pipe
-      old_flag = @check_pipe.fcntl(Fcntl::F_GETFD, 0)
-      old_sflag = @suicide_pipe.fcntl(Fcntl::F_GETFD, 0)
-      @check_pipe.fcntl(Fcntl::F_SETFD, old_flag | Fcntl::FD_CLOEXEC)
-      @suicide_pipe.fcntl(Fcntl::F_SETFD, old_sflag | Fcntl::FD_CLOEXEC)
-      log " - CLOEXEC flags have been set"
       if daemon?
         log "* Daemonizing..."
         Process.daemon(true)
@@ -289,7 +280,6 @@ module Puma
       spawn_workers
 
       Signal.trap "SIGINT" do
-        log "- SIGINT #{$$} | #{Process.pid}"
         stop
       end
 
@@ -323,7 +313,6 @@ module Puma
             check_workers
 
           rescue Interrupt
-            log "Got interuppt"
             @status = :stop
           end
         end
