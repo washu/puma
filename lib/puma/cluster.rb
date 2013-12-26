@@ -1,4 +1,5 @@
 require 'puma/runner'
+require 'fcntl'
 
 module Puma
   class Cluster < Runner
@@ -265,7 +266,9 @@ module Puma
       # closed.
       #
       @check_pipe, @suicide_pipe = Puma::Util.pipe
-
+      # Prevent a child process from mesing with check pipe
+      old_flag = @check_pipe.fnctl(Fcntl::F_GETFD, 0))
+      @check_pip.fnctl(Fcntl::F_SETFD, old_flag | FD_CLOEXEC);
       if daemon?
         log "* Daemonizing..."
         Process.daemon(true)
