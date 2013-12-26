@@ -271,6 +271,7 @@ module Puma
       old_sflag = @suicide_pipe.fnctl(Fcntl::F_GETFD, 0))
       @check_pipe.fnctl(Fcntl::F_SETFD, old_flag | FD_CLOEXEC);
       @suicide_pipe.fnctl(Fcntl::F_SETFD, old_sflag | FD_CLOEXEC);
+      log " - CLOEXEC flags have been set"
       if daemon?
         log "* Daemonizing..."
         Process.daemon(true)
