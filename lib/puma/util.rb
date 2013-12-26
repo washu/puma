@@ -8,7 +8,7 @@ module Puma
       b_flag = b.fcntl(Fcntl::F_GETFD, 0)
       a.fcntl(Fcntl::F_SETFD, a_flag | Fcntl::FD_CLOEXEC)
       b.fcntl(Fcntl::F_SETFD, b_flag | Fcntl::FD_CLOEXEC)
-      a,b
+      [a,b]
     end
   end
 end
