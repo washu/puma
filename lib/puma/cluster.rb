@@ -228,15 +228,18 @@ module Puma
       read, @wakeup = Puma::Util.pipe
 
       Signal.trap "SIGCHLD" do
+        log "- got CHLD for #{$$} | #{Process.pid}"
         wakeup!
       end
 
       Signal.trap "TTIN" do
+        log "- got TTIN for #{$$} | #{Process.pid}"
         @options[:workers] += 1
         wakeup!
       end
 
       Signal.trap "TTOU" do
+        log "- got TTOU for #{$$} | #{Process.pid}"
         @options[:workers] -= 1 if @options[:workers] >= 2
         @workers.last.term
         wakeup!
@@ -280,6 +283,7 @@ module Puma
       spawn_workers
 
       Signal.trap "SIGINT" do
+        log "- SIGINT #{$$} | #{Process.pid}"
         stop
       end
 
@@ -313,6 +317,7 @@ module Puma
             check_workers
 
           rescue Interrupt
+            log "Got interuppt"
             @status = :stop
           end
         end
